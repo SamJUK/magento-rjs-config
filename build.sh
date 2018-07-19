@@ -7,14 +7,17 @@ php bin/magento deploy:mode:set production
 php bin/magento setup:static-content:deploy
 
 # Loop over all the locals @TODO: extend to cover area/namespace/theme
-for locale in ./pub/static/frontend/Magento/luma/*; do
-    
-    # Move Static Content
-    rm -rf "${locale}_source";
-    mv "$locale" "${locale}_source";
+for namespace in ./pub/static/frontend/*; do
+    for theme in ${namespace}/*; do
+        for locale in ${theme}/*; do
+            # Move Static Content
+            rm -rf "${locale}_source";
+            mv "$locale" "${locale}_source";
 
-    # Compile the bundles
-    r.js -o build.js baseUrl="${locale}_source" dir="${locale}"
+            # Compile the bundles
+            r.js -o build.js baseUrl="${locale}_source" dir="${locale}"
+        done
+    done
 done
 
 
